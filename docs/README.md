@@ -1,11 +1,15 @@
 # Engine room training docs
 
-## Active project — Filter **operation** animation (2D / 3D)
+## Active project — BOLL **TYP 6.61** operation animation (2D / 3D)
+
+**Source:** Manual §5 Filtration + §6 Back-Flushing, drawings **Z32326 Bl.1 / Bl.2**
 
 | File | Content |
 |------|---------|
-| [me-fo-filter-operation-2d-3d-animation.md](me-fo-filter-operation-2d-3d-animation.md) | Filtration vs backflush principle, mermaid/ASCII flow, tools, narration |
-| [me-fo-animation-storyboard-taglish.md](me-fo-animation-storyboard-taglish.md) | Scene-by-scene storyboard (~2 min) for submission |
+| [boll-6.61-filtration-backflush-animation.md](boll-6.61-filtration-backflush-animation.md) | Full technical sequence, mermaid/ASCII, Taglish VO, ship P&ID link |
+| [boll-6.61-animation-storyboard-taglish.md](boll-6.61-animation-storyboard-taglish.md) | 9-scene storyboard synced to manual |
+
+Legacy (generic F.O.): `me-fo-filter-operation-2d-3d-animation.md`, `me-fo-animation-storyboard-taglish.md`
 
 ## Other — Candle **maintenance** (crew checklist)
 
