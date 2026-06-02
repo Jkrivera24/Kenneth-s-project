@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Daily Routine</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Daily Routine</h1>
+    <p class="subtitle">Automate your day — complete steps on the web or scan from your phone.</p>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="today">Today</button>
+    <button class="tab" data-tab="phone">Phone bridge</button>
+    <button class="tab" data-tab="import">Import</button>
+  </nav>
+
+  <main>
+    <section id="tab-today" class="panel active">
+      <div id="progress" class="progress-bar"><div class="fill"></div></div>
+      <p id="progress-label" class="progress-label"></p>
+      <div id="routines"></div>
+      <div id="pending" class="pending-box hidden">
+        <h3>Due now</h3>
+        <ul id="pending-list"></ul>
+      </div>
+    </section>
+
+    <section id="tab-phone" class="panel">
+      <h2>Connect your phone</h2>
+      <p>Use these tools so your phone can trigger and complete routine steps automatically.</p>
+      <a class="btn primary" href="/scan">Open QR scanner</a>
+      <div class="card">
+        <h3>Webhook URL</h3>
+        <code id="webhook-url"></code>
+        <button class="btn small" id="copy-webhook">Copy</button>
+      </div>
+      <div class="card">
+        <h3>Supported phone events</h3>
+        <ul class="event-list">
+          <li><code>wake</code> — alarm / first unlock</li>
+          <li><code>left_home</code> — left home geofence</li>
+          <li><code>arrived_home</code> — arrived home</li>
+          <li><code>focus_on</code> / <code>focus_off</code> — Do Not Disturb / Focus</li>
+          <li><code>bedtime</code> — Wind Down or bedtime mode</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Recent phone activity</h3>
+        <ul id="phone-events"></ul>
+      </div>
+      <p class="hint">Full setup: see <a href="/static/PHONE_SETUP.md">PHONE_SETUP.md</a> in the repo.</p>
+    </section>
+
+    <section id="tab-import" class="panel">
+      <h2>Import from phone</h2>
+      <p>Paste JSON exported from Shortcuts, Tasker, or a notes app.</p>
+      <textarea id="import-json" rows="12" placeholder='{"routines":[{"name":"My day","period":"day","steps":[{"title":"Gym","time":"06:00"}]}]}'></textarea>
+      <button class="btn primary" id="import-btn">Import</button>
+      <p id="import-status"></p>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scan routine QR</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+</head>
+<body class="scan-page">
+  <header>
+    <h1>Scan step</h1>
+    <p class="subtitle">Point your camera at a routine QR code to mark it done.</p>
+  </header>
+  <div id="reader"></div>
+  <p id="scan-status" class="scan-status">Starting camera…</p>
+  <a href="/" class="btn">Back to dashboard</a>
+  <script>
+    const statusEl = document.getElementById('scan-status');
+    const params = new URLSearchParams(location.search);
+    const presetStep = params.get('step');
+
+    async function completeStep(stepId, source) {
+      const res = await fetch(`/api/steps/${stepId}/complete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source }),
+      });
+      if (!res.ok) throw new Error('Failed to complete');
+      return res.json();
+    }
+
+    if (presetStep) {
+      completeStep(presetStep, 'qr_link')
+        .then(() => {
+          statusEl.textContent = 'Step marked complete!';
+          statusEl.classList.add('success');
+        })
+        .catch(() => { statusEl.textContent = 'Could not complete step.'; });
+    }
+
+    function parseStepFromText(text) {
+      try {
+        const u = new URL(text);
+        const step = u.searchParams.get('step');
+        if (step) return parseInt(step, 10);
+      } catch (_) {}
+      const m = text.match(/step[=:](\d+)/i);
+      return m ? parseInt(m[1], 10) : null;
+    }
+
+    const scanner = new Html5Qrcode('reader');
+    Html5Qrcode.getCameras().then(cameras => {
+      const cam = cameras.length ? cameras[cameras.length - 1].id : { facingMode: 'environment' };
+      scanner.start(
+        cam,
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        async (decoded) => {
+          const stepId = parseStepFromText(decoded);
+          if (!stepId) {
+            statusEl.textContent = 'QR not recognized as a routine step.';
+            return;
+          }
+          scanner.pause(true);
+          statusEl.textContent = 'Completing…';
+          try {
+            await completeStep(stepId, 'qr_scan');
+            statusEl.textContent = 'Done! You can scan the next step.';
+            statusEl.classList.add('success');
+          } catch (e) {
+            statusEl.textContent = 'Error completing step.';
+          }
+          setTimeout(() => scanner.resume(), 2000);
+        },
+        () => {}
+      ).catch(() => {
+        statusEl.textContent = 'Camera access denied or unavailable. Use the link from your QR instead.';
+      });
+    });
+  </script>
+</body>
+</html>
