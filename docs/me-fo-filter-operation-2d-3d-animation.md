@@ -1,5 +1,7 @@
 # M/E F.O. Auto Back-Flushing Filter — How It Works (Filtration & Backflush)
 
+> **Updated reference:** Use **[boll-6.61-filtration-backflush-animation.md](boll-6.61-filtration-backflush-animation.md)** for submission — BOLL manual §5/§6: filtration is **outside → inside** (dirt on outside mesh).
+
 **Project type:** Technical animation / submission (2D or 3D flow)  
 **System:** M/E F.O. SERVICE SYSTEM — P&ID **2536–2540**  
 **Equipment:** **M/E F.O. AUTO BACK-FLUSHING FILTER (ABS. 34 µm)** + bypass (changeover)  

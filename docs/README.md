@@ -8,6 +8,7 @@
 |------|---------|
 | [boll-6.61-filtration-backflush-animation.md](boll-6.61-filtration-backflush-animation.md) | Full technical sequence, mermaid/ASCII, Taglish VO, ship P&ID link |
 | [boll-6.61-animation-storyboard-taglish.md](boll-6.61-animation-storyboard-taglish.md) | 9-scene storyboard synced to manual |
+| [boll-6.61-blended-production-steps.md](boll-6.61-blended-production-steps.md) | **Blended 2D + 3D step list** (PowerPoint + Blender + edit) |
 
 Legacy (generic F.O.): `me-fo-filter-operation-2d-3d-animation.md`, `me-fo-animation-storyboard-taglish.md`
 
