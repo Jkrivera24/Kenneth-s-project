@@ -2,6 +2,8 @@
 
 Field knowledge for alarms and fixes **not fully covered** in the instruction manual. The official manual stays the authority; this log records what actually worked on board.
 
+**New to GitHub?** See **[HOW-TO-EDIT.md](HOW-TO-EDIT.md)** — edit on phone or laptop without Git commands.
+
 ## Workflow status labels
 
 Use these for **your** log only. Do not confuse them with HMI states (e.g. Aconis `ERR`).
