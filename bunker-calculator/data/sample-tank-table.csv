@@ -1,0 +1,16 @@
+# Sample HFO tank capacity table (replace with your engine-room tables)
+# Format: sounding rows (m), trim columns (m by stern = positive)
+# Volume in m³ at each sounding/trim intersection
+# Tank: No.1 HFO Service (example only — copy your ship values here)
+tank_name,No.1 HFO Service
+list_correction_m3_per_deg,0.15
+sounding_m,trim_0.0,trim_1.0,trim_2.0,trim_3.0,trim_4.0
+6.0,380.5,378.2,376.0,373.8,371.5
+6.5,395.2,392.9,390.7,388.4,386.2
+7.0,410.0,407.7,405.5,403.2,401.0
+7.5,424.8,422.5,420.3,418.0,415.8
+8.0,439.5,437.2,435.0,432.7,430.5
+8.5,454.3,452.0,449.8,447.5,445.3
+9.0,469.0,466.7,464.5,462.2,460.0
+9.5,483.8,481.5,479.3,477.0,474.8
+10.0,498.5,496.2,494.0,491.7,489.5

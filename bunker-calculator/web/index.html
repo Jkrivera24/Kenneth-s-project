@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bunker Fuel Calculator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div>
+      <h1>Bunker Fuel Calculator</h1>
+      <p class="subtitle">Sounding + trim + list → volume · temperature + density → MT @ 15°C</p>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="card">
+      <h2>1. Tank capacity tables</h2>
+      <p class="hint">
+        Load your engine-room sounding tables (CSV). You can import one file per tank.
+        Columns are trim (m); rows are sounding (m); cells are volume (m³).
+      </p>
+      <div class="row actions">
+        <label class="file-btn">
+          Import CSV
+          <input type="file" id="importCsv" accept=".csv,text/csv" hidden />
+        </label>
+        <button type="button" id="loadSample" class="secondary">Load sample table</button>
+        <button type="button" id="downloadTemplate" class="secondary">Download CSV template</button>
+      </div>
+      <label>
+        Loaded tables
+        <select id="tableSelect"></select>
+      </label>
+      <textarea id="tankTableCsv" rows="12" spellcheck="false"></textarea>
+      <p id="tableStatus" class="status ok">Sample table loaded.</p>
+    </section>
+
+    <section class="card">
+      <h2>2. Ship condition</h2>
+      <div class="grid-3">
+        <label>
+          Trim (m, by stern +)
+          <input type="number" id="trim" step="0.1" value="2.0" />
+        </label>
+        <label>
+          List (°, stbd +)
+          <input type="number" id="listDeg" step="0.1" value="0" />
+        </label>
+        <label>
+          Density @ 15°C
+          <div class="inline">
+            <input type="number" id="density" step="0.0001" value="991" />
+            <select id="densityUnit">
+              <option value="kg_m3">kg/m³</option>
+              <option value="kg_l">kg/L</option>
+            </select>
+          </div>
+        </label>
+      </div>
+    </section>
+
+    <section class="card wide">
+      <div class="card-head">
+        <h2>3. Tank readings</h2>
+        <button type="button" id="addTank" class="secondary">+ Add tank</button>
+      </div>
+      <div class="table-wrap">
+        <table id="readingsTable">
+          <thead>
+            <tr>
+              <th>Tank table</th>
+              <th>Tank name</th>
+              <th>Sounding (m)</th>
+              <th>Temp (°C)</th>
+              <th>Obs. vol (m³)</th>
+              <th>VCF</th>
+              <th>Std vol @ 15°C (m³)</th>
+              <th>Mass (MT)</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="readingsBody"></tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="4"><strong>Total</strong></td>
+              <td id="totalObs">—</td>
+              <td></td>
+              <td id="totalStd">—</td>
+              <td id="totalMT"><strong>—</strong></td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="row actions">
+        <button type="button" id="calculate">Calculate</button>
+        <button type="button" id="exportResults" class="secondary">Export results CSV</button>
+      </div>
+    </section>
+
+    <section class="card wide">
+      <h2>How it works</h2>
+      <ol class="steps">
+        <li><strong>Sounding table</strong> — lookup observed volume using sounding, trim, and list correction.</li>
+        <li><strong>VCF (ASTM 54B)</strong> — correct volume to 15°C from observed temperature and density @ 15°C.</li>
+        <li><strong>Mass</strong> — MT = standard volume × density @ 15°C ÷ 1000.</li>
+      </ol>
+      <p class="hint">
+        Same logic as Bunker Master: enter trim, sounding, temperature, list, and density — the calculator does the rest.
+        Replace the sample table with your ship's calibration tables from the engine room.
+      </p>
+    </section>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
