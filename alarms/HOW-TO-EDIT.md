@@ -140,6 +140,12 @@ You do **not** need to “sync” manually — GitHub keeps one online copy.
 
 ---
 
+## Prefer a spreadsheet?
+
+Use Google Sheets or Excel first — see **[SPREADSHEET-GUIDE.md](SPREADSHEET-GUIDE.md)**. Upload `alarms/data/incident-log.csv` to GitHub when you want markdown updated automatically.
+
+---
+
 ## Quick checklist when an alarm sounds
 
 1. [ ] Open `alarms/active/` (existing file or new from template)
