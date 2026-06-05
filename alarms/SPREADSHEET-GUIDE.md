@@ -83,8 +83,9 @@ There is **no live link** from Google to GitHub by default (that needs extra set
    - Pencil → **delete all** → paste/upload new CSV content (keep header row)
    - **Commit changes** to `main`
 4. Within ~1 minute, GitHub Actions updates:
-   - `alarms/active/*.md` for IN PROGRESS / CLEARED / RESET
-   - `alarms/resolved/<system>/*.md` for DONE / RECURRING
+   - `alarms/active/*.md` for **IN PROGRESS**, **CLEARED**, **RESET**
+   - `alarms/resolved/icms/*.md` for **DONE** / **RECURRING** when `system` contains ICMS / PCMECR / Aconis
+   - The old copy in `active/` is **removed automatically** when the file moves to `resolved/`
 
 You can still edit `.md` files in the GitHub app by hand; the next CSV upload **overwrites** markdown generated from the sheet for those `id`s.
 
@@ -93,7 +94,7 @@ You can still edit `.md` files in the GitHub app by hand; the next CSV upload **
 | You update in sheet | Bot updates on GitHub |
 |---------------------|------------------------|
 | `status`, `steps_tried`, `not_in_manual`, etc. | Matching `ALM-....md` file |
-| `status` = DONE | File moves to `alarms/resolved/icms/` (folder from `system` column) |
+| `status` = DONE | File moves to `alarms/resolved/icms/` (ICMS-type systems) and disappears from `active/` |
 
 ---
 

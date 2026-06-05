@@ -18,6 +18,12 @@ RESOLVED_STATUSES = {"DONE", "RECURRING"}
 
 def slug_system(system: str) -> str:
     s = system.strip().lower()
+    if "icms" in s or "pcmecr" in s or "aconis" in s:
+        return "icms"
+    if "fuel" in s:
+        return "fuel"
+    if "lube" in s or "lo " in s:
+        return "lube"
     s = re.sub(r"[/\\]+", "-", s)
     s = re.sub(r"[^a-z0-9]+", "-", s)
     return s.strip("-") or "general"
@@ -138,6 +144,17 @@ def load_rows() -> list[dict[str, str]]:
     return rows
 
 
+def remove_stale_copies(incident_id: str, keep: Path) -> None:
+    """Remove duplicate .md files for one id outside the target path."""
+    for base in (ACTIVE, RESOLVED):
+        if not base.exists():
+            continue
+        for path in base.rglob(f"{incident_id}.md"):
+            if path.resolve() != keep.resolve():
+                path.unlink()
+                print(f"Removed stale {path.relative_to(ROOT)}")
+
+
 def main() -> None:
     rows = load_rows()
     if not rows:
@@ -146,8 +163,10 @@ def main() -> None:
 
     written: list[Path] = []
     for row in rows:
+        incident_id = row.get("id", "").strip()
         path = target_path(row)
         path.write_text(build_markdown(row), encoding="utf-8")
+        remove_stale_copies(incident_id, path)
         written.append(path)
         print(f"Wrote {path.relative_to(ROOT)}")
 
