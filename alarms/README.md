@@ -4,6 +4,8 @@ Field knowledge for alarms and fixes **not fully covered** in the instruction ma
 
 **New to GitHub?** See **[HOW-TO-EDIT.md](HOW-TO-EDIT.md)** — edit on phone or laptop without Git commands.
 
+**Spreadsheet first?** See **[SPREADSHEET-GUIDE.md](SPREADSHEET-GUIDE.md)** — use Google Sheets/Excel, then upload CSV to auto-update markdown on GitHub.
+
 ## Workflow status labels
 
 Use these for **your** log only. Do not confuse them with HMI states (e.g. Aconis `ERR`).
@@ -36,7 +38,9 @@ alarms/
     incident-log.csv        # optional spreadsheet import
 ```
 
-When an incident is **DONE**, move its file from `active/` to `resolved/<system>/` (create subfolders as needed, e.g. `icms/`, `fuel/`, `lube/`).
+When an incident is **DONE**, move its file from `active/` to `resolved/<system>/` (e.g. `icms/`, `fuel/`, `lube/`).
+
+**Spreadsheet + CSV upload:** set `status` to **DONE** and sync — the file moves to `resolved/icms/` automatically (see [SPREADSHEET-GUIDE.md](SPREADSHEET-GUIDE.md)).
 
 ## Spreadsheet columns (optional daily log)
 

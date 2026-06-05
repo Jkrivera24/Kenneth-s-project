@@ -1,0 +1,26 @@
+name: Sync alarms from spreadsheet CSV
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "alarms/data/incident-log.csv"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate markdown from CSV
+        run: python3 scripts/sync_alarms_from_csv.py
+
+      - name: Commit updated alarm files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Sync alarm markdown from spreadsheet CSV"
+          file_pattern: "alarms/active/*.md alarms/resolved/**/*.md"
