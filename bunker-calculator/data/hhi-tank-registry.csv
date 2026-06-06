@@ -1,0 +1,7 @@
+# Hyundai Heavy Industries — ship tank registry
+# From SOUNDING/ULLAGE TABLE header pages (volume rows to be filled from manual)
+tank_id,tank_name,contents,net_volume_m3,format
+LOSUMP,MAIN L.O.SUMP T.(C),Lubricating Oil,56.76,hhi_even_keel
+LOSTORP,MAIN L.O.STOR.T.(P),Lubricating Oil,48.6,hhi_even_keel
+LOGESTORP,G/E L.O.STOR.T.(P),Lubricating Oil,16.46,hhi_even_keel
+LOCYL01P,CYL.O.STOR.T.(P),Lubricating Oil,36.45,hhi_even_keel

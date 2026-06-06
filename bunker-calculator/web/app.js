@@ -3,9 +3,11 @@ import {
   calculateBunkerQuantity,
   densityInputToKgM3,
   formatNum,
+  tableSummary,
 } from "./calculator.js";
 
-const SAMPLE_CSV = `# Sample HFO tank capacity table (replace with your engine-room tables)
+const SAMPLE_CSV = `# Sample HFO tank capacity table (trim grid format)
+format,grid
 tank_name,No.1 HFO Service
 list_correction_m3_per_deg,0.15
 sounding_m,trim_0.0,trim_1.0,trim_2.0,trim_3.0,trim_4.0
@@ -20,6 +22,7 @@ sounding_m,trim_0.0,trim_1.0,trim_2.0,trim_3.0,trim_4.0
 10.0,498.5,496.2,494.0,491.7,489.5`;
 
 const SAMPLE_CSV_2 = `# Second tank example
+format,grid
 tank_name,No.2 HFO Settling
 list_correction_m3_per_deg,0.12
 sounding_m,trim_0.0,trim_1.0,trim_2.0,trim_3.0
@@ -29,14 +32,23 @@ sounding_m,trim_0.0,trim_1.0,trim_2.0,trim_3.0
 8.0,360.0,358.5,357.0,355.5
 9.0,410.0,408.5,407.0,405.5`;
 
-const TEMPLATE_CSV = `# Bunker tank capacity table template
-# Copy values from your engine-room sounding table
+const TEMPLATE_CSV = `# Hyundai HHI format (recommended for L.O. tanks)
+format,hhi_even_keel
+tank_id,TANK01
 tank_name,Your Tank Name
-list_correction_m3_per_deg,0.0
-sounding_m,trim_0.0,trim_1.0,trim_2.0
-6.0,100.0,98.0,96.0
-7.0,120.0,118.0,116.0
-8.0,140.0,138.0,136.0`;
+contents,Lubricating Oil
+net_volume_m3,0
+list_correction_m3_per_deg,0
+sounding_m,ullage_m,volume_m3,trim_corr_m3_per_m
+0.000,5.000,0.00,0.00
+1.000,4.000,10.00,0.05`;
+
+const HHI_TANK_FILES = [
+  "LOSUMP.csv",
+  "LOSTORP.csv",
+  "LOGESTORP.csv",
+  "LOCYL01P.csv",
+];
 
 /** @type {Map<string, { csv: string, table: object }>} */
 const tables = new Map();
@@ -52,6 +64,7 @@ const els = {
   listDeg: document.getElementById("listDeg"),
   density: document.getElementById("density"),
   densityUnit: document.getElementById("densityUnit"),
+  densityPreset: document.getElementById("densityPreset"),
   readingsBody: document.getElementById("readingsBody"),
   totalObs: document.getElementById("totalObs"),
   totalStd: document.getElementById("totalStd"),
@@ -63,8 +76,9 @@ function setTableStatus(msg, ok = true) {
   els.tableStatus.className = ok ? "status ok" : "status err";
 }
 
-function tableIdFromName(name) {
-  return name.replace(/\s+/g, "_").toLowerCase();
+function tableIdFromTable(table) {
+  if (table.tankId) return table.tankId.toLowerCase();
+  return table.tankName.replace(/\s+/g, "_").toLowerCase();
 }
 
 function refreshTableSelect() {
@@ -82,16 +96,14 @@ function refreshTableSelect() {
 
 function registerTable(csv, selectAfter = true) {
   const table = parseTankTableCsv(csv);
-  const id = tableIdFromName(table.tankName);
+  const id = tableIdFromTable(table);
   tables.set(id, { csv, table });
   if (selectAfter) {
     activeTableId = id;
     els.tankTableCsv.value = csv;
   }
   refreshTableSelect();
-  setTableStatus(
-    `Loaded: ${table.tankName} (${table.soundings.length} soundings × ${table.trims.length} trims)`
-  );
+  setTableStatus(`Loaded: ${tableSummary(table)}`);
   return id;
 }
 
@@ -127,14 +139,28 @@ function tableOptionsHtml(selectedId) {
     .join("");
 }
 
-function addTankRow(tableId = activeTableId, name = "", sounding = "8.0", temp = "45") {
+function addTankRow(
+  tableId = activeTableId,
+  name = "",
+  reading = "2.0",
+  temp = "35",
+  measure = "sounding"
+) {
   const entry = tables.get(tableId);
   const defaultName = entry?.table.tankName ?? "Tank";
+  const canUllage =
+    entry?.table.format === "hhi_even_keel" && entry?.table.ullages;
   const tr = document.createElement("tr");
   tr.innerHTML = `
     <td><select class="table-pick">${tableOptionsHtml(tableId)}</select></td>
     <td><input type="text" class="tank-name" value="${name || defaultName}" placeholder="Tank name" /></td>
-    <td><input type="number" class="sounding" step="0.01" value="${sounding}" /></td>
+    <td>
+      <select class="measure-type">
+        <option value="sounding"${measure === "sounding" ? " selected" : ""}>Sounding</option>
+        <option value="ullage"${measure === "ullage" ? " selected" : ""}${canUllage ? "" : " disabled"}>Ullage</option>
+      </select>
+    </td>
+    <td><input type="number" class="reading" step="0.001" value="${reading}" /></td>
     <td><input type="number" class="temp" step="0.1" value="${temp}" /></td>
     <td class="out obs">—</td>
     <td class="out vcf">—</td>
@@ -148,12 +174,17 @@ function addTankRow(tableId = activeTableId, name = "", sounding = "8.0", temp =
   });
   tr.querySelector(".table-pick").addEventListener("change", (e) => {
     const id = e.target.value;
-    const t = tables.get(id)?.table.tankName;
+    const t = tables.get(id)?.table;
     if (t && !tr.querySelector(".tank-name").value.trim()) {
-      tr.querySelector(".tank-name").value = t;
+      tr.querySelector(".tank-name").value = t.tankName;
+    }
+    const ullageOpt = tr.querySelector('.measure-type option[value="ullage"]');
+    if (ullageOpt) {
+      ullageOpt.disabled = !(t?.format === "hhi_even_keel" && t?.ullages);
     }
     runCalculate();
   });
+  tr.querySelector(".measure-type").addEventListener("change", runCalculate);
   els.readingsBody.appendChild(tr);
 }
 
@@ -178,17 +209,34 @@ function runCalculate() {
     if (!entry) continue;
 
     const tankName = tr.querySelector(".tank-name").value.trim() || entry.table.tankName;
-    const sounding = Number(tr.querySelector(".sounding").value);
+    const measurementType = tr.querySelector(".measure-type").value;
+    const reading = Number(tr.querySelector(".reading").value);
     const tempC = Number(tr.querySelector(".temp").value);
 
-    const result = calculateBunkerQuantity({
+    const params = {
       table: entry.table,
-      sounding,
+      measurementType,
       trim,
       listDeg,
       tempC,
       densityKgM3,
-    });
+    };
+    if (measurementType === "ullage") {
+      params.ullage = reading;
+    } else {
+      params.sounding = reading;
+    }
+
+    let result;
+    try {
+      result = calculateBunkerQuantity(params);
+    } catch (err) {
+      tr.querySelector(".obs").textContent = "—";
+      tr.querySelector(".vcf").textContent = "—";
+      tr.querySelector(".std").textContent = "—";
+      tr.querySelector(".mt").textContent = "—";
+      continue;
+    }
 
     tr.querySelector(".obs").textContent = formatNum(result.observedVolumeM3);
     tr.querySelector(".vcf").textContent = formatNum(result.vcf, 4);
@@ -202,7 +250,8 @@ function runCalculate() {
     lastResults.push({
       tankName,
       tableId,
-      sounding,
+      measurementType,
+      reading,
       tempC,
       trim,
       listDeg,
@@ -230,11 +279,12 @@ function exportResults() {
   if (!lastResults.length) return;
 
   const header =
-    "tank,sounding_m,trim_m,list_deg,temp_c,density_kg_m3,obs_vol_m3,vcf,std_vol_m3,mass_mt";
+    "tank,measure,reading_m,trim_m,list_deg,temp_c,density_kg_m3,obs_vol_m3,vcf,std_vol_m3,mass_mt";
   const rows = lastResults.map((r) =>
     [
       r.tankName,
-      r.sounding,
+      r.measurementType,
+      r.reading,
       r.trim,
       r.listDeg,
       r.tempC,
@@ -249,10 +299,44 @@ function exportResults() {
 }
 
 document.getElementById("loadSample").addEventListener("click", () => {
+  tables.clear();
+  els.readingsBody.innerHTML = "";
   registerTable(SAMPLE_CSV);
   registerTable(SAMPLE_CSV_2, false);
+  els.density.value = "991";
+  els.densityPreset.value = "991";
+  addTankRow("no.1_hfo_service", "No.1 HFO Service", "8.5", "45");
+  addTankRow("no.2_hfo_settling", "No.2 HFO Settling", "7.2", "42");
   runCalculate();
 });
+
+async function loadHhiTanks() {
+  tables.clear();
+  els.readingsBody.innerHTML = "";
+  let first = true;
+  for (const file of HHI_TANK_FILES) {
+    try {
+      const res = await fetch(`data/tanks/${file}`);
+      if (!res.ok) throw new Error(res.statusText);
+      registerTable(await res.text(), first);
+      first = false;
+    } catch (e) {
+      setTableStatus(`Could not load ${file}: ${e.message}`, false);
+      return;
+    }
+  }
+  els.density.value = "900";
+  els.densityPreset.value = "900";
+  addTankRow("losump", "MAIN L.O.SUMP T.(C)", "2.0", "35");
+  addTankRow("lostorp", "MAIN L.O.STOR.T.(P)", "2.5", "35");
+  setTableStatus(
+    "HHI L.O. tanks loaded — replace placeholder rows in CSV with your manual volume pages.",
+    true
+  );
+  runCalculate();
+}
+
+document.getElementById("loadHhiTanks").addEventListener("click", loadHhiTanks);
 
 document.getElementById("downloadTemplate").addEventListener("click", () => {
   downloadText("tank-table-template.csv", TEMPLATE_CSV);
@@ -272,7 +356,16 @@ els.tableSelect.addEventListener("change", () => {
 });
 
 document.getElementById("addTank").addEventListener("click", () => {
-  addTankRow(activeTableId, "", "8.0", "45");
+  addTankRow(activeTableId, "", "2.0", "35");
+});
+
+els.densityPreset.addEventListener("change", () => {
+  const v = els.densityPreset.value;
+  if (v) {
+    els.density.value = v;
+    els.densityUnit.value = "kg_m3";
+    runCalculate();
+  }
 });
 
 document.getElementById("calculate").addEventListener("click", runCalculate);
@@ -291,8 +384,4 @@ document.getElementById("exportResults").addEventListener("click", exportResults
 
 els.readingsBody.addEventListener("input", runCalculate);
 
-registerTable(SAMPLE_CSV);
-registerTable(SAMPLE_CSV_2, false);
-addTankRow("no.1_hfo_service", "No.1 HFO Service", "8.5", "45");
-addTankRow("no.2_hfo_settling", "No.2 HFO Settling", "7.2", "42");
-runCalculate();
+loadHhiTanks();

@@ -42,7 +42,34 @@ pip install openpyxl
 python3 spreadsheet/generate_spreadsheet.py
 ```
 
-## Tank table CSV format
+## Hyundai HHI sounding tables (your ship)
+
+Your manual header pages are registered. See **[docs/hhi-sounding-tables.md](docs/hhi-sounding-tables.md)** for setup.
+
+| Tank ID | Tank name | Net vol |
+|---------|-----------|---------|
+| LOSUMP | MAIN L.O.SUMP T.(C) | 56.76 m³ |
+| LOSTORP | MAIN L.O.STOR.T.(P) | 48.6 m³ |
+| LOGESTORP | G/E L.O.STOR.T.(P) | 16.46 m³ |
+| LOCYL01P | CYL.O.STOR.T.(P) | 36.45 m³ |
+
+1. Open the **volume pages** after each header in your HHI manual.
+2. Copy sounding / ullage / volume / trim correction rows into `data/tanks/*.csv`.
+3. In the web app, click **Load my HHI L.O. tanks** — or import each CSV.
+
+**HHI even keel CSV format:**
+
+```csv
+format,hhi_even_keel
+tank_id,LOSUMP
+tank_name,MAIN L.O.SUMP T.(C)
+net_volume_m3,56.76
+sounding_m,ullage_m,volume_m3,trim_corr_m3_per_m
+0.000,5.000,0.00,0.00
+0.500,4.500,2.80,0.05
+```
+
+## Tank table CSV format (trim grid — HFO)
 
 Copy from your engine-room sounding table:
 

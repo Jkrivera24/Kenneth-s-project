@@ -9,8 +9,8 @@
 <body>
   <header class="header">
     <div>
-      <h1>Bunker Fuel Calculator</h1>
-      <p class="subtitle">Sounding + trim + list → volume · temperature + density → MT @ 15°C</p>
+      <h1>Bunker & Sounding Calculator</h1>
+      <p class="subtitle">Hyundai HHI sounding/ullage tables · trim + list → volume · density → MT</p>
     </div>
   </header>
 
@@ -18,15 +18,16 @@
     <section class="card">
       <h2>1. Tank capacity tables</h2>
       <p class="hint">
-        Load your engine-room sounding tables (CSV). You can import one file per tank.
-        Columns are trim (m); rows are sounding (m); cells are volume (m³).
+        Load engine-room sounding tables (CSV). Supports <strong>Hyundai HHI</strong> format
+        (sounding, ullage, volume, trim correction) and trim-grid tables for HFO.
       </p>
       <div class="row actions">
         <label class="file-btn">
           Import CSV
           <input type="file" id="importCsv" accept=".csv,text/csv" hidden />
         </label>
-        <button type="button" id="loadSample" class="secondary">Load sample table</button>
+        <button type="button" id="loadHhiTanks" class="secondary">Load my HHI L.O. tanks</button>
+        <button type="button" id="loadSample" class="secondary">Load HFO sample</button>
         <button type="button" id="downloadTemplate" class="secondary">Download CSV template</button>
       </div>
       <label>
@@ -42,7 +43,7 @@
       <div class="grid-3">
         <label>
           Trim (m, by stern +)
-          <input type="number" id="trim" step="0.1" value="2.0" />
+          <input type="number" id="trim" step="0.1" value="0" />
         </label>
         <label>
           List (°, stbd +)
@@ -51,12 +52,21 @@
         <label>
           Density @ 15°C
           <div class="inline">
-            <input type="number" id="density" step="0.0001" value="991" />
+            <input type="number" id="density" step="0.0001" value="900" />
             <select id="densityUnit">
               <option value="kg_m3">kg/m³</option>
               <option value="kg_l">kg/L</option>
             </select>
           </div>
+        </label>
+        <label>
+          Preset
+          <select id="densityPreset">
+            <option value="">Custom</option>
+            <option value="900" selected>L.O. ~900 kg/m³</option>
+            <option value="991">HFO ~991 kg/m³</option>
+            <option value="850">MGO ~850 kg/m³</option>
+          </select>
         </label>
       </div>
     </section>
@@ -72,7 +82,8 @@
             <tr>
               <th>Tank table</th>
               <th>Tank name</th>
-              <th>Sounding (m)</th>
+              <th>Measure</th>
+              <th>Reading (m)</th>
               <th>Temp (°C)</th>
               <th>Obs. vol (m³)</th>
               <th>VCF</th>
@@ -84,7 +95,7 @@
           <tbody id="readingsBody"></tbody>
           <tfoot>
             <tr class="total-row">
-              <td colspan="4"><strong>Total</strong></td>
+              <td colspan="5"><strong>Total</strong></td>
               <td id="totalObs">—</td>
               <td></td>
               <td id="totalStd">—</td>
@@ -108,8 +119,9 @@
         <li><strong>Mass</strong> — MT = standard volume × density @ 15°C ÷ 1000.</li>
       </ol>
       <p class="hint">
-        Same logic as Bunker Master: enter trim, sounding, temperature, list, and density — the calculator does the rest.
-        Replace the sample table with your ship's calibration tables from the engine room.
+        Same logic as Bunker Master. For your Hyundai HHI manual: copy the volume pages into CSV
+        (see <code>docs/hhi-sounding-tables.md</code>). Header pages alone are not enough — you need
+        the sounding/ullage/volume rows from the following pages.
       </p>
     </section>
   </main>

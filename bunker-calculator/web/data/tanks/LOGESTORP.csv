@@ -1,0 +1,11 @@
+# Hyundai HHI — G/E L.O.STOR.T.(P) (LOGESTORP)
+# Net volume 16.46 m³, Manual Sounding @ FR #26+0.300
+format,hhi_even_keel
+tank_id,LOGESTORP
+tank_name,G/E L.O.STOR.T.(P)
+contents,Lubricating Oil
+net_volume_m3,16.46
+list_correction_m3_per_deg,0
+sounding_m,ullage_m,volume_m3,trim_corr_m3_per_m
+0.000,,0.00,0.00
+3.500,,16.46,0.00

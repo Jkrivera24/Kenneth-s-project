@@ -1,0 +1,11 @@
+# Hyundai HHI — CYL.O.STOR.T.(P) (LOCYL01P)
+# Net volume 36.45 m³, Manual Sounding @ FR #25-0.090
+format,hhi_even_keel
+tank_id,LOCYL01P
+tank_name,CYL.O.STOR.T.(P)
+contents,Lubricating Oil
+net_volume_m3,36.45
+list_correction_m3_per_deg,0
+sounding_m,ullage_m,volume_m3,trim_corr_m3_per_m
+0.000,,0.00,0.00
+4.000,,36.45,0.00

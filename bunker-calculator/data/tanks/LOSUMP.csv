@@ -1,0 +1,12 @@
+# Hyundai HHI — MAIN L.O.SUMP T.(C) (LOSUMP)
+# Copy volume rows from the sounding/ullage table pages in your manual.
+# Header page: Net volume 56.76 m³, Manual Sounding @ FR #22-0.025
+format,hhi_even_keel
+tank_id,LOSUMP
+tank_name,MAIN L.O.SUMP T.(C)
+contents,Lubricating Oil
+net_volume_m3,56.76
+list_correction_m3_per_deg,0
+sounding_m,ullage_m,volume_m3,trim_corr_m3_per_m
+0.000,,0.00,0.00
+5.000,,56.76,0.00

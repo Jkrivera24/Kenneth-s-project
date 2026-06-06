@@ -1,0 +1,11 @@
+# Hyundai HHI — MAIN L.O.STOR.T.(P) (LOSTORP)
+# Net volume 48.6 m³, Manual Sounding @ FR #36-0.175
+format,hhi_even_keel
+tank_id,LOSTORP
+tank_name,MAIN L.O.STOR.T.(P)
+contents,Lubricating Oil
+net_volume_m3,48.6
+list_correction_m3_per_deg,0
+sounding_m,ullage_m,volume_m3,trim_corr_m3_per_m
+0.000,,0.00,0.00
+4.500,,48.60,0.00
