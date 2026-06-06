@@ -35,6 +35,12 @@ related_id:
 
 unknown
 
+## Photos and videos
+
+-
+
+Upload files to `alarms/attachments/ALM-YYYY-MMDD-NNN/` from your phone (GitHub app). See [attachments/README.md](../attachments/README.md).
+
 ## Closure notes
 
 - **CLEARED / RESET / DONE** date:

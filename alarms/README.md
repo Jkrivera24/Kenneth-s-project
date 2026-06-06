@@ -6,6 +6,8 @@ Field knowledge for alarms and fixes **not fully covered** in the instruction ma
 
 **Spreadsheet first?** See **[SPREADSHEET-GUIDE.md](SPREADSHEET-GUIDE.md)** — use Google Sheets/Excel, then upload CSV to auto-update markdown on GitHub.
 
+**HMI photos or clips from your phone?** See **[attachments/README.md](attachments/README.md)** — you upload files to GitHub; nothing reads your camera roll automatically.
+
 ## Workflow status labels
 
 Use these for **your** log only. Do not confuse them with HMI states (e.g. Aconis `ERR`).
@@ -33,6 +35,7 @@ alarms/
   README.md                 # this file
   active/                   # open incidents (IN PROGRESS, sometimes RESET)
   resolved/                 # DONE (and worth keeping CLEARED/RESET lessons)
+  attachments/              # photos & videos per incident (upload from phone)
   templates/
     incident-template.md
     incident-log.csv        # optional spreadsheet import
@@ -65,6 +68,7 @@ Same field names as the Markdown frontmatter where possible:
 | `verified_by` | Initials |
 | `related_id` | Prior incident if RECURRING |
 | `notes` | Diagram context, load, watch, etc. |
+| `attachments` | Filenames in `attachments/<id>/`, semicolon-separated (e.g. `hmi.jpg; panel.mp4`) |
 
 ## Markdown incident file
 

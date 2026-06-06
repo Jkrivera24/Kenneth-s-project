@@ -40,6 +40,7 @@ Copy the example row for `ALM-2026-0602-001` or add a new row:
 | `steps_tried` | `Checked power \| Reset switch` or `1. First step` |
 | `not_in_manual` | Fill when you learn something new |
 | `root_cause` | `unknown` until known |
+| `attachments` | Photo/video filenames after upload to `alarms/attachments/<id>/` — e.g. `hmi.jpg; panel.mp4` |
 
 **One row = one incident** (same as one markdown file).
 
@@ -59,8 +60,11 @@ Copy the example row for `ALM-2026-0602-001` or add a new row:
 | Edit | Open `Alarm log – Kenneth` → tap cell → type |
 | Status | Use dropdown in column B |
 | New alarm | Insert row at bottom, new `id` |
+| Add HMI photo | Upload file in **GitHub app** first (see [attachments/README.md](attachments/README.md)), then put filename in `attachments` column |
 
 Same sheet opens on laptop — no extra sync between phone and laptop.
+
+**Note:** Google Sheets and this repo **cannot** read your phone camera roll. Upload photos/videos to GitHub separately, then reference the filenames in `attachments`.
 
 ---
 
@@ -93,7 +97,7 @@ You can still edit `.md` files in the GitHub app by hand; the next CSV upload **
 
 | You update in sheet | Bot updates on GitHub |
 |---------------------|------------------------|
-| `status`, `steps_tried`, `not_in_manual`, etc. | Matching `ALM-....md` file |
+| `status`, `steps_tried`, `not_in_manual`, `attachments`, etc. | Matching `ALM-....md` file |
 | `status` = DONE | File moves to `alarms/resolved/icms/` (ICMS-type systems) and disappears from `active/` |
 
 ---
