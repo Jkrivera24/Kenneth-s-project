@@ -1,0 +1,19 @@
+{
+  "name": "Solo Watch",
+  "short_name": "Solo Watch",
+  "description": "Daily fitness quests for seafarers — level up at sea with gradual training and Mi Band steps.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a1628",
+  "theme_color": "#0a1628",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["health", "fitness", "lifestyle"]
+}
