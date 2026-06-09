@@ -20,11 +20,17 @@ No subscriptions. No server. Your data stays on your phone.
 
 ### Live app (GitHub Pages)
 
-After merging to `main` and enabling Pages (**Settings → Pages → Build and deployment → Source: GitHub Actions**), the app is available at:
+**URL:** https://jkrivera24.github.io/Kenneth-s-project/
 
-**https://jkrivera24.github.io/Kenneth-s-project/**
+**One-time setup (use a desktop browser, not the GitHub phone app):**
 
-On your phone: open that URL → Share → **Add to Home Screen**.
+1. Open: https://github.com/Jkrivera24/Kenneth-s-project/settings/pages
+2. Under **Branch** (or **Build and deployment → Source**), choose:
+   - Branch: **`gh-pages`**
+   - Folder: **`/ (root)`**
+3. Click **Save**
+4. Go to **Actions** → **Deploy Solo Watch to GitHub Pages** → **Run workflow** (if it has not run yet)
+5. Wait 1–2 minutes, then open the URL above on your phone → **Add to Home Screen**
 
 ### Run locally
 
