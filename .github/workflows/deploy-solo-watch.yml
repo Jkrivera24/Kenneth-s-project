@@ -1,10 +1,11 @@
-name: Deploy Solo Watch to GitHub Pages
+name: Deploy GitHub Pages apps
 
 on:
   push:
     branches: [main]
     paths:
       - "solo-watch/**"
+      - "alarm-log/**"
       - ".github/workflows/deploy-solo-watch.yml"
   workflow_dispatch:
 
@@ -12,7 +13,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: solo-watch-pages
+  group: github-pages-apps
   cancel-in-progress: false
 
 jobs:
@@ -22,10 +23,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Deploy solo-watch to gh-pages branch
+      - name: Build combined site
+        run: |
+          rm -rf _site
+          mkdir -p _site/alarm-log
+          cp -r solo-watch/. _site/
+          cp -r alarm-log/. _site/alarm-log/
+
+      - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./solo-watch
+          publish_dir: ./_site
           force_orphan: true
-          commit_message: "Deploy Solo Watch"
+          commit_message: "Deploy Solo Watch + Alarm Log"

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f2744">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Alarm Log</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Alarm Log</h1>
+    <p>Troubleshooting notes — works offline on your phone</p>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="list">Alarms</button>
+    <button class="tab" data-tab="export">Sync</button>
+    <button class="tab" data-tab="help">Help</button>
+  </nav>
+
+  <main>
+    <section class="panel active" id="panel-list">
+      <div id="alarm-list"></div>
+    </section>
+
+    <section class="panel" id="panel-detail">
+      <div class="detail-header">
+        <button class="back-btn" id="btn-back" aria-label="Back">←</button>
+        <h2 id="detail-title">Alarm</h2>
+      </div>
+      <form id="alarm-form"></form>
+    </section>
+
+    <section class="panel" id="panel-export">
+      <div class="help-box">
+        <h3>Send to GitHub</h3>
+        <p>Your alarms are saved on this phone. Tap below to download a file, then upload it to GitHub (laptop is easier).</p>
+      </div>
+      <button class="btn btn-green" id="btn-export">Download CSV for GitHub</button>
+      <button class="btn btn-blue" id="btn-import">Import CSV from file</button>
+      <input type="file" accept=".csv,text/csv" class="file-input" id="file-import">
+      <p class="card-meta" style="margin-top:12px">File name: <code>incident-log.csv</code></p>
+    </section>
+
+    <section class="panel" id="panel-help">
+      <div class="help-box">
+        <h3>Add to Home Screen (like an app)</h3>
+        <ol>
+          <li>Open this page in <strong>Chrome</strong> on your phone.</li>
+          <li>Menu <strong>⋮</strong> → <strong>Add to Home screen</strong> or <strong>Install app</strong>.</li>
+          <li>Open from the new icon — works offline at sea.</li>
+        </ol>
+      </div>
+      <div class="help-box">
+        <h3>Upload CSV to GitHub (laptop)</h3>
+        <ol>
+          <li>Tap <strong>Sync</strong> → <strong>Download CSV for GitHub</strong>.</li>
+          <li>On laptop: open your repo → <code>alarms/data/incident-log.csv</code>.</li>
+          <li>Click pencil → paste file contents → <strong>Commit</strong>.</li>
+          <li>Status <strong>DONE</strong> moves alarm to <code>resolved/icms/</code> on GitHub.</li>
+        </ol>
+      </div>
+      <div class="help-box">
+        <h3>Status labels</h3>
+        <p><strong>IN PROGRESS</strong> — alarm active<br>
+        <strong>CLEARED</strong> — gone, no reset<br>
+        <strong>RESET</strong> — reset on panel<br>
+        <strong>DONE</strong> — closed and verified<br>
+        <strong>RECURRING</strong> — came back again</p>
+      </div>
+    </section>
+  </main>
+
+  <button class="fab" id="fab-new" aria-label="New alarm">+</button>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

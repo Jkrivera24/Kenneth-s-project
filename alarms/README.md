@@ -2,6 +2,8 @@
 
 Field knowledge for alarms and fixes **not fully covered** in the instruction manual. The official manual stays the authority; this log records what actually worked on board.
 
+**Easiest on phone:** use the **[Alarm Log app](../alarm-log/README.md)** (https://jkrivera24.github.io/Kenneth-s-project/alarm-log/) — tap status, add steps, download CSV for GitHub.
+
 **New to GitHub?** See **[HOW-TO-EDIT.md](HOW-TO-EDIT.md)** — edit on phone or laptop without Git commands.
 
 **Spreadsheet first?** See **[SPREADSHEET-GUIDE.md](SPREADSHEET-GUIDE.md)** — use Google Sheets/Excel, then upload CSV to auto-update markdown on GitHub.
