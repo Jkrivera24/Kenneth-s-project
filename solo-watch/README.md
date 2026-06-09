@@ -18,16 +18,22 @@ No subscriptions. No server. Your data stays on your phone.
 
 ## Quick start
 
-Serve the folder locally or open via any static host:
+### Live app (GitHub Pages)
+
+After merging to `main` and enabling Pages (**Settings → Pages → Build and deployment → Source: GitHub Actions**), the app is available at:
+
+**https://jkrivera24.github.io/Kenneth-s-project/**
+
+On your phone: open that URL → Share → **Add to Home Screen**.
+
+### Run locally
 
 ```bash
 cd solo-watch
 python3 -m http.server 8080
 ```
 
-Open `http://localhost:8080` on your phone (or use GitHub Pages / Netlify for a permanent URL).
-
-**Install on phone:** Chrome/Safari → Share → **Add to Home Screen**.
+Open `http://localhost:8080` (same device) or `http://YOUR-PC-IP:8080` (phone on same Wi‑Fi).
 
 ## Mi Band 6 sync
 
