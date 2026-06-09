@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0a1628">
+  <meta name="description" content="Solo Watch — daily fitness quests for seafarers. Level up at sea with gradual training and Mi Band step tracking.">
+  <title>Solo Watch</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="app">
+    <header class="system-header">
+      <div class="header-top">
+        <div class="logo">
+          <span class="logo-icon">⚓</span>
+          <div>
+            <h1>Solo Watch</h1>
+            <p class="tagline">Level up at sea</p>
+          </div>
+        </div>
+        <button id="btn-settings" class="icon-btn" aria-label="Settings">⚙</button>
+      </div>
+      <div class="player-card" id="player-card">
+        <div class="level-badge">
+          <span class="level-label">LV</span>
+          <span id="player-level">1</span>
+        </div>
+        <div class="player-info">
+          <div class="player-name" id="player-name">Hunter</div>
+          <div class="xp-bar-wrap">
+            <div class="xp-bar" id="xp-bar"></div>
+          </div>
+          <div class="xp-text"><span id="player-xp">0</span> / <span id="player-xp-next">100</span> XP</div>
+        </div>
+        <div class="streak-badge" id="streak-display" title="Current streak">🔥 0</div>
+      </div>
+    </header>
+
+    <nav class="tab-nav" role="tablist">
+      <button class="tab active" data-tab="quest" role="tab">Quest</button>
+      <button class="tab" data-tab="steps" role="tab">Steps</button>
+      <button class="tab" data-tab="stats" role="tab">Stats</button>
+      <button class="tab" data-tab="weekly" role="tab">Weekly</button>
+    </nav>
+
+    <main>
+      <!-- QUEST TAB -->
+      <section id="tab-quest" class="tab-panel active">
+        <div class="system-panel daily-quest-panel">
+          <div class="panel-header">
+            <span class="panel-tag">[ DAILY QUEST ]</span>
+            <span id="quest-date" class="quest-date"></span>
+          </div>
+          <p class="system-msg" id="system-greeting">The System has issued today's quest.</p>
+          <div id="rest-day-banner" class="rest-banner hidden">Rest day — recovery earns +25% XP tomorrow.</div>
+          <div id="penalty-banner" class="penalty-banner hidden">⚠ PENALTY ZONE — incomplete quest from yesterday.</div>
+
+          <div class="quest-list" id="quest-list"></div>
+
+          <div class="quest-actions">
+            <button id="btn-complete-quest" class="btn primary" disabled>Complete Quest</button>
+            <button id="btn-rest-day" class="btn secondary">Mark Rest Day</button>
+          </div>
+        </div>
+
+        <div class="system-panel">
+          <div class="panel-header"><span class="panel-tag">[ CUSTOM QUESTS ]</span></div>
+          <div id="custom-quest-list"></div>
+          <form id="custom-quest-form" class="custom-form">
+            <input type="text" id="custom-quest-name" placeholder="Quest name (e.g. Plank 60s)" maxlength="60" required>
+            <button type="submit" class="btn small">Add</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- STEPS TAB -->
+      <section id="tab-steps" class="tab-panel">
+        <div class="system-panel">
+          <div class="panel-header"><span class="panel-tag">[ MI BAND 6 — STEPS ]</span></div>
+          <p class="hint">Sync from Zepp Life or enter steps manually. Works offline at sea.</p>
+
+          <div class="steps-hero">
+            <div class="steps-count" id="steps-today">0</div>
+            <div class="steps-goal">/ <span id="steps-goal">3000</span> steps</div>
+            <div class="steps-bar-wrap"><div class="steps-bar" id="steps-bar"></div></div>
+          </div>
+
+          <div class="steps-controls">
+            <button class="btn counter-btn" data-steps="-500">−500</button>
+            <button class="btn counter-btn" data-steps="-100">−100</button>
+            <input type="number" id="steps-input" min="0" max="100000" placeholder="Enter steps">
+            <button class="btn counter-btn" data-steps="100">+100</button>
+            <button class="btn counter-btn" data-steps="500">+500</button>
+          </div>
+          <button id="btn-set-steps" class="btn secondary full">Set Steps</button>
+
+          <div class="import-block">
+            <label class="btn secondary full file-label">
+              Import Zepp Life CSV
+              <input type="file" id="csv-import" accept=".csv,.txt" hidden>
+            </label>
+            <details class="mi-band-help">
+              <summary>How to sync Mi Band 6</summary>
+              <ol>
+                <li>Open <strong>Zepp Life</strong> (Mi Fit) on your phone.</li>
+                <li>Check today's steps on the home screen.</li>
+                <li>Enter them above, or export data: Profile → Settings → Account → Export data.</li>
+                <li>Import the <code>hour_steps*.csv</code> or <code>steps*.csv</code> file here.</li>
+              </ol>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATS TAB -->
+      <section id="tab-stats" class="tab-panel">
+        <div class="system-panel">
+          <div class="panel-header"><span class="panel-tag">[ STATUS WINDOW ]</span></div>
+          <div class="stats-grid" id="stats-grid"></div>
+        </div>
+        <div class="system-panel">
+          <div class="panel-header"><span class="panel-tag">[ TITLES & ACHIEVEMENTS ]</span></div>
+          <div id="achievements-list" class="achievements"></div>
+        </div>
+        <div class="system-panel">
+          <div class="panel-header"><span class="panel-tag">[ RAMP PROGRESS ]</span></div>
+          <p class="hint">Training intensity increases as you level up. Full quest: 100 / 100 / 100 / 10 km.</p>
+          <div id="ramp-progress" class="ramp-progress"></div>
+        </div>
+      </section>
+
+      <!-- WEEKLY TAB -->
+      <section id="tab-weekly" class="tab-panel">
+        <div class="system-panel">
+          <div class="panel-header"><span class="panel-tag">[ WEEKLY LOG ]</span></div>
+          <div id="weekly-summary" class="weekly-summary"></div>
+          <div id="weekly-chart" class="weekly-chart"></div>
+        </div>
+        <div class="system-panel">
+          <div class="panel-header"><span class="panel-tag">[ HISTORY ]</span></div>
+          <div id="history-list" class="history-list"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Settings modal -->
+    <dialog id="settings-dialog" class="system-dialog">
+      <form method="dialog" id="settings-form">
+        <h2>Settings</h2>
+        <label>Hunter name
+          <input type="text" id="setting-name" maxlength="24">
+        </label>
+        <label>Timezone (for daily reset)
+          <select id="setting-timezone"></select>
+        </label>
+        <fieldset>
+          <legend>Watch schedule (reminders)</legend>
+          <label>Watch start
+            <input type="time" id="setting-watch-start" value="00:00">
+          </label>
+          <label>Watch end
+            <input type="time" id="setting-watch-end" value="04:00">
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="setting-reminders"> Enable quest reminders
+          </label>
+          <label>Reminder time (off-watch)
+            <input type="time" id="setting-reminder-time" value="10:00">
+          </label>
+        </fieldset>
+        <label>Steps daily goal override (0 = use ramp)
+          <input type="number" id="setting-steps-override" min="0" max="50000" value="0">
+        </label>
+        <div class="dialog-actions">
+          <button type="submit" class="btn primary">Save</button>
+          <button type="button" id="btn-export" class="btn secondary">Export data</button>
+          <button type="button" id="btn-reset" class="btn danger">Reset all</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div id="toast" class="toast hidden" role="status"></div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
