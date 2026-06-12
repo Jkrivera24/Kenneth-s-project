@@ -1,0 +1,11 @@
+Setting,Value,Notes
+Account Size ($),5000,Edit for your account
+Max Loss Limit (%),0.06,6% portfolio circuit breaker
+Max Daily Loss (%),0.03,3% daily stop
+Max Correlation Group Risk (%),0.01,1% per Group A or B
+Reduce Lots for Correlated Trades,TRUE,100% / 50% / 25% / 12.5%
+Base Risk Per Trade (%),0.005,0.5% before correlation scale
+Min TP (pips),50,No trade below this
+Trend Filter,TRUE,Hard gate before correlation
+Max Lot (0.01 per $1k),=FORMULA,Use =FLOOR(Account/1000,1)*0.01 in Excel
+Today Realized Loss ($),0,Update manually during session

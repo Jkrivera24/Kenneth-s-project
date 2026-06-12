@@ -1,0 +1,9 @@
+TestID,Symbol,Direction,Entry,TP,ExpectedTrend,ExpectedGroup,ExpectedScale,ExpectedOutcome,StudyNotes
+T1,GBPUSD,Buy,1.26500,1.27500,FAIL,Group A,100%,REJECT Trend,GBP is WEAK - hard trend block
+T2,GBPUSD,Sell,1.26500,1.25500,PASS,Group B,varies,Check correlation,GBP WEAK supports sell
+T3,EURUSD,Buy,1.08500,1.09500,PASS,Group A,12.5% if 4 open,Near group cap,5th correlated USD-weak leg
+T4,AUDUSD,Buy,0.70840,0.70930,PASS,Group A,100% if 0 open,FAIL Min TP,Your screenshot example - only 9 pips
+T5,BTCUSD,Buy,95000.00,96000.00,PASS,None,100%,Independent,BTC outside USD groups
+T6,XAUUSD,Buy,2650.00,2680.00,PASS,Group A,varies,APPROVE if room,Gold buy = USD weakness bucket
+T7,USDCHF,Sell,0.88500,0.87500,PASS,Group A,100%,USD weakness via CHF sell,Maps to Group A
+T8,AUDUSD,Buy,0.70800,0.71800,PASS,Group A,50% if 1 open,Scale test,2nd correlated trade = half size

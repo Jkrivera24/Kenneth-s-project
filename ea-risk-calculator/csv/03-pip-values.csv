@@ -1,0 +1,10 @@
+Symbol,PipSize,DollarPerPipPer1Lot,Notes
+EURUSD,0.0001,10,Adjust for your broker
+GBPUSD,0.0001,10,
+AUDUSD,0.0001,10,
+NZDUSD,0.0001,10,
+USDCHF,0.0001,10,
+USDCAD,0.0001,10,
+USDJPY,0.01,9.1,JPY pairs use 0.01 pip size
+XAUUSD,0.01,100,Broker-dependent
+BTCUSD,0.01,1,Broker-dependent
