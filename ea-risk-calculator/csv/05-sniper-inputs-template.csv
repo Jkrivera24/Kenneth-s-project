@@ -1,0 +1,25 @@
+Field,Value,FormulaCell,Notes
+Symbol,AUDUSD,B48,Manual input
+Direction,Buy,B49,Buy or Sell
+Entry Price,0.7084,B50,Manual input
+TP Price,0.7093,B51,Manual input - example fails 50 pip min
+TP Pips,FORMULA,B52,Calculated
+TP Tier OK,FORMULA,B53,PASS or FAIL
+SL Pips,FORMULA,B54,From TP tier rules
+SL Price,FORMULA,B55,Calculated
+Correlation Group,FORMULA,B56,A / B / None
+Open Count In Group,FORMULA,B57,From positions log
+Correlation Scale,FORMULA,B58,100% / 50% / 25% / 12.5%
+Base Lot,FORMULA,B59,From base risk % and SL
+Scaled Lot,FORMULA,B60,After correlation scale
+Capped Lot,FORMULA,B61,After 0.01 per $1k cap
+Candidate Risk Pct,FORMULA,B62,This trade risk at SL
+Current Group Risk Pct,FORMULA,B63,Sum of open group risk
+Projected Group Risk Pct,FORMULA,B64,Current + candidate
+Group Cap OK,FORMULA,B65,PASS or FAIL
+Daily Loss OK,FORMULA,B66,PASS or FAIL
+Max Loss OK,FORMULA,B67,PASS or FAIL
+Trend OK,FORMULA,D76,Hard gate when trend filter ON
+Final Verdict,FORMULA,B68,APPROVE / FAIL / REDUCE OR REJECT
+Final Lot,FORMULA,B69,Lot to trade if approved
+Log Line,FORMULA,B70,Copy to journal
