@@ -4,6 +4,8 @@ No Git commands required. You only need a **free GitHub account** and access to 
 
 **Repo:** https://github.com/Jkrivera24/Kenneth-s-project
 
+**Photos and videos:** This project **cannot** access your phone’s camera roll. You upload files you choose to GitHub. See **[attachments/README.md](attachments/README.md)**.
+
 ---
 
 ## One-time setup (5 minutes)
@@ -50,6 +52,30 @@ Your edit is saved online. You will see it on your laptop too.
 3. Tap the **pencil** (top right) → edit → **Commit changes** (same as above)
 
 **Tip:** Use the app if the pencil is hard to find in the browser.
+
+---
+
+## Add photos or videos from your phone
+
+Cursor, GitHub, and this alarm log **do not** connect to your phone’s Photos app. Only **you** can pick files and upload them.
+
+### Quick steps (GitHub app)
+
+1. Take a photo or short video on your phone (HMI screen, panel, wiring, etc.).
+2. GitHub app → **Kenneth-s-project** → **Code** → `alarms` → `attachments`.
+3. **Add file** → **Upload files** → create or open folder named like your incident id (e.g. `ALM-2026-0602-001`).
+4. Select the file(s) from your phone → **Commit changes**.
+5. Open the incident in `alarms/active/ALM-....md` → under **Photos and videos**, add:
+
+   ```markdown
+   ![HMI at alarm](../attachments/ALM-2026-0602-001/hmi-screenshot.jpg)
+   ```
+
+   Or list filenames in the spreadsheet **`attachments`** column (`hmi.jpg; panel.mp4`) and sync CSV — the bot embeds them.
+
+**iPhone:** If photos are HEIC and do not show on GitHub, use **Settings → Camera → Formats → Most Compatible**, or save as JPEG before upload.
+
+Full details: **[attachments/README.md](attachments/README.md)**.
 
 ---
 

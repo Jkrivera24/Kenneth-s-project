@@ -11,9 +11,13 @@ ROOT = Path(__file__).resolve().parents[1]
 CSV_PATH = ROOT / "alarms" / "data" / "incident-log.csv"
 ACTIVE = ROOT / "alarms" / "active"
 RESOLVED = ROOT / "alarms" / "resolved"
+ATTACHMENTS = ROOT / "alarms" / "attachments"
 
 ACTIVE_STATUSES = {"IN PROGRESS", "CLEARED", "RESET"}
 RESOLVED_STATUSES = {"DONE", "RECURRING"}
+
+IMAGE_EXT = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".heic", ".heif"}
+VIDEO_EXT = {".mp4", ".mov", ".webm", ".m4v", ".avi"}
 
 
 def slug_system(system: str) -> str:
@@ -51,6 +55,49 @@ def parse_alarm_table(
     return "\n".join(out)
 
 
+def attachments_link_prefix(target: Path) -> str:
+    """Relative path from an incident .md file to alarms/attachments/."""
+    rel = target.parent.relative_to(ROOT / "alarms")
+    return "/".join([".."] * len(rel.parts)) + "/attachments/"
+
+
+def normalize_attachment_path(incident_id: str, entry: str) -> str:
+    """Return path under alarms/attachments/ (e.g. ALM-.../photo.jpg)."""
+    name = entry.strip().replace("\\", "/")
+    if not name:
+        return ""
+    name = re.sub(r"^(alarms/)?attachments/", "", name)
+    if "/" not in name:
+        return f"{incident_id}/{name}"
+    return name
+
+
+def format_attachments(attachments: str, incident_id: str, target: Path) -> str:
+    text = attachments.strip()
+    if not text or text == "-":
+        return "-\n"
+
+    prefix = attachments_link_prefix(target)
+    lines: list[str] = []
+    for entry in re.split(r"[;|\n]", text):
+        entry = entry.strip()
+        if not entry:
+            continue
+        rel = normalize_attachment_path(incident_id, entry)
+        link = f"{prefix}{rel}"
+        ext = Path(entry).suffix.lower()
+        label = Path(entry).name
+        if ext in IMAGE_EXT:
+            alt = Path(entry).stem.replace("-", " ").replace("_", " ")
+            lines.append(f"![{alt}]({link})")
+        elif ext in VIDEO_EXT:
+            lines.append(f"- Video: [{label}]({link})")
+        else:
+            lines.append(f"- [{label}]({link})")
+
+    return "\n".join(lines) + "\n" if lines else "-\n"
+
+
 def format_steps(steps: str) -> str:
     text = steps.strip()
     if not text or text == "-":
@@ -63,7 +110,7 @@ def format_steps(steps: str) -> str:
     return "\n".join(f"{i}. {p}" for i, p in enumerate(parts, 1)) + "\n"
 
 
-def build_markdown(row: dict[str, str]) -> str:
+def build_markdown(row: dict[str, str], target: Path) -> str:
     incident_id = row.get("id", "").strip()
     status = row.get("status", "IN PROGRESS").strip().upper()
     steps = format_steps(row.get("steps_tried", ""))
@@ -81,6 +128,7 @@ def build_markdown(row: dict[str, str]) -> str:
 
     related = row.get("related_id", "").strip()
     related_line = f"\nrelated_id: {related}" if related else ""
+    media = format_attachments(row.get("attachments", ""), incident_id, target)
 
     return f"""---
 id: {incident_id}
@@ -115,6 +163,9 @@ verified_by: {row.get('verified_by', '').strip()}{related_line}
 
 {root}
 
+## Photos and videos
+
+{media}
 ## Closure notes
 
 - **CLEARED / RESET / DONE** date:
@@ -165,7 +216,7 @@ def main() -> None:
     for row in rows:
         incident_id = row.get("id", "").strip()
         path = target_path(row)
-        path.write_text(build_markdown(row), encoding="utf-8")
+        path.write_text(build_markdown(row, path), encoding="utf-8")
         remove_stale_copies(incident_id, path)
         written.append(path)
         print(f"Wrote {path.relative_to(ROOT)}")
