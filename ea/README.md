@@ -11,26 +11,30 @@ git checkout cursor/ea-correlation-risk-starter-3ccf
 git pull
 ```
 
-## Copy into MetaTrader 5
+## Copy into MetaTrader 5 (two folders)
 
-Copy the entire `ea/` folder into your MT5 data folder:
+MT5 needs files in **two** places:
 
-```text
-Kenneth-s-project/ea/
-  MyEA.mq5
-  Include/Risk/
-    RiskCalculator.mqh
-    CorrelationGroups.mqh
-    CorrelationRiskGate.mqh
-```
-
-**Destination (typical):**
+### A) Expert — `MQL5/Experts/ea/`
 
 ```text
-%APPDATA%/MetaQuotes/Terminal/<ID>/MQL5/Experts/ea/
+MyEA.mq5   →  MQL5/Experts/ea/MyEA.mq5
 ```
 
-Or in MT5: **File → Open Data Folder → MQL5 → Experts** — create folder `ea` and paste files.
+### B) Includes — `MQL5/Include/Risk/`
+
+```text
+RiskCalculator.mqh      →  MQL5/Include/Risk/RiskCalculator.mqh
+CorrelationGroups.mqh   →  MQL5/Include/Risk/CorrelationGroups.mqh
+CorrelationRiskGate.mqh →  MQL5/Include/Risk/CorrelationRiskGate.mqh
+```
+
+**Steps:**
+
+1. MT5 → **File → Open Data Folder**
+2. Create `MQL5\Experts\ea\` — paste **MyEA.mq5**
+3. Create `MQL5\Include\Risk\` — paste all **3 .mqh** files
+4. Compile **MyEA.mq5** only (not the .mqh files alone)
 
 ## Compile
 

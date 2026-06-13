@@ -4,7 +4,7 @@
 #ifndef CORRELATION_GROUPS_MQH
 #define CORRELATION_GROUPS_MQH
 
-#include "RiskCalculator.mqh"
+#include <Risk/RiskCalculator.mqh>
 
 enum ENUM_CORRELATION_GROUP
   {

@@ -6,7 +6,7 @@
 #property version   "0.10"
 #property strict
 
-#include "Include/Risk/CorrelationRiskGate.mqh"
+#include <Risk/CorrelationRiskGate.mqh>
 
 //--- inputs (match ea-risk-calculator spreadsheet)
 input double InpRiskPercentPerTrade           = 0.5;   // Base risk per trade (%)

@@ -4,7 +4,7 @@
 #ifndef CORRELATION_RISK_GATE_MQH
 #define CORRELATION_RISK_GATE_MQH
 
-#include "CorrelationGroups.mqh"
+#include <Risk/CorrelationGroups.mqh>
 
 struct CorrelationGateResult
   {
