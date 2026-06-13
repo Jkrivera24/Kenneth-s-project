@@ -1,83 +1,96 @@
 //+------------------------------------------------------------------+
-//| MyEA.mq5 - Correlation-aware risk starter                        |
-//| Wire EMA guard, pullback, and re-entry before OrderSend later.   |
+//| MyEA.mq5 - Correlation-aware risk + pullback pending orders      |
 //+------------------------------------------------------------------+
 #property copyright "Kenneth-s-project"
-#property version   "0.10"
+#property version   "0.20"
 #property strict
 
-#include <Risk/CorrelationRiskGate.mqh>
+#include <Trade/OrderExecutor.mqh>
+#include <Filters/PullbackEntry.mqh>
 
-//--- inputs (match ea-risk-calculator spreadsheet)
-input double InpRiskPercentPerTrade           = 0.5;   // Base risk per trade (%)
+//--- risk inputs (match ea-risk-calculator spreadsheet)
+input double InpRiskPercentPerTrade            = 0.5;   // Base risk per trade (%)
 input double InpMaxCorrelationGroupRiskPercent = 1.0;  // Max group risk (%)
-input bool   InpReduceLotsForCorrelatedTrades = true;  // Scale lots by open count
-input ulong  InpMagicNumber                   = 20260612;
-input double InpMaxLotPerThousand             = 0.01;  // Hard lot cap per $1k equity
+input bool   InpReduceLotsForCorrelatedTrades  = true;  // Scale lots by open count
+input ulong  InpMagicNumber                    = 20260612;
 
-//--- placeholder: signal module will call this before OrderSend
-bool TryOpenWithCorrelationGate(const string symbol,
-                                const ENUM_ORDER_TYPE orderType,
-                                const double entry,
-                                const double sl,
-                                const double tp)
+//--- pullback pending order inputs
+input bool   InpPullbackPendingEnabled = true;   // Place pending orders on pullback
+input int    InpPullbackEmaPeriod      = 50;     // EMA period for trend + pullback level
+input double InpPullbackTargetTpPips   = 100.0;  // Target TP distance (pips)
+input double InpPullbackMinTpPips      = 50.0;   // Minimum TP (pips) - no trade below
+input double InpPullbackOffsetPips     = 0.0;    // Offset from EMA (pips)
+input int    InpPullbackExpiryHours    = 24;     // Pending order expiry (hours)
+input bool   InpOnePullbackPerSymbol   = true;   // One pending pullback per symbol
+
+const string PULLBACK_COMMENT = "MyEA pullback";
+
+datetime g_lastPullbackBarTime = 0;
+
+//+------------------------------------------------------------------+
+//| Try to place a pending order at the EMA pullback level             |
+//+------------------------------------------------------------------+
+bool TryPlacePullbackPending(const string symbol)
   {
-   CorrelationGateResult gate;
-   const bool approved = ApproveCorrelationEntry(symbol,
-                                                   orderType,
-                                                   entry,
-                                                   sl,
-                                                   InpRiskPercentPerTrade,
-                                                   InpMaxCorrelationGroupRiskPercent,
-                                                   InpReduceLotsForCorrelatedTrades,
-                                                   InpMagicNumber,
-                                                   gate);
-
-   const ENUM_CORRELATION_GROUP group = GetCorrelationGroup(symbol, orderType);
-   LogCorrelationRisk(symbol, orderType, group, gate);
-
-   if(!approved)
+   if(!InpPullbackPendingEnabled)
       return false;
 
-   MqlTradeRequest request = {};
-   MqlTradeResult  result  = {};
-
-   request.action    = TRADE_ACTION_DEAL;
-   request.symbol    = symbol;
-   request.volume    = gate.finalLot;
-   request.type      = orderType;
-   request.price     = entry;
-   request.sl        = sl;
-   request.tp        = tp;
-   request.deviation = 10;
-   request.magic     = InpMagicNumber;
-   request.comment   = "MyEA corr gate";
-
-   if(!OrderSend(request, result))
-     {
-      PrintFormat("[CORR] OrderSend failed: retcode=%d %s", result.retcode, result.comment);
+   if(InpOnePullbackPerSymbol && HasPullbackPendingOrder(symbol, InpMagicNumber, PULLBACK_COMMENT))
       return false;
-     }
 
-   return true;
+   PullbackSetup setup = BuildPullbackSetup(symbol,
+                                            _Period,
+                                            InpPullbackEmaPeriod,
+                                            InpPullbackTargetTpPips,
+                                            InpPullbackMinTpPips,
+                                            InpPullbackOffsetPips);
+   LogPullbackSetup(symbol, setup);
+
+   if(!setup.valid)
+      return false;
+
+   datetime expiry = 0;
+   if(InpPullbackExpiryHours > 0)
+      expiry = TimeCurrent() + InpPullbackExpiryHours * 3600;
+
+   return ExecuteWithCorrelationGate(symbol,
+                                     setup.orderType,
+                                     setup.entry,
+                                     setup.sl,
+                                     setup.tp,
+                                     InpRiskPercentPerTrade,
+                                     InpMaxCorrelationGroupRiskPercent,
+                                     InpReduceLotsForCorrelatedTrades,
+                                     InpMagicNumber,
+                                     PULLBACK_COMMENT,
+                                     expiry);
   }
 
 //+------------------------------------------------------------------+
 int OnInit()
   {
-   Print("MyEA correlation risk starter loaded.");
-   PrintFormat("Group cap=%.2f%% | Reduce correlated=%s | Base risk=%.2f%%",
+   Print("MyEA v0.20 loaded - correlation risk + pullback pending.");
+   PrintFormat("Group cap=%.2f%% | Pullback pending=%s | EMA=%d | TP=%.0f pips",
                InpMaxCorrelationGroupRiskPercent,
-               InpReduceLotsForCorrelatedTrades ? "true" : "false",
-               InpRiskPercentPerTrade);
+               InpPullbackPendingEnabled ? "ON" : "OFF",
+               InpPullbackEmaPeriod,
+               InpPullbackTargetTpPips);
    return INIT_SUCCEEDED;
   }
 
 //+------------------------------------------------------------------+
 void OnTick()
   {
-   // EMA guard, pullback, and re-entry plug in here.
-   // Only call TryOpenWithCorrelationGate() after all filters pass.
+   if(!InpPullbackPendingEnabled)
+      return;
+
+   // Evaluate once per new bar to avoid duplicate pending orders
+   const datetime barTime = iTime(_Symbol, _Period, 0);
+   if(barTime == g_lastPullbackBarTime)
+      return;
+   g_lastPullbackBarTime = barTime;
+
+   TryPlacePullbackPending(_Symbol);
   }
 
 //+------------------------------------------------------------------+

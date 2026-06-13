@@ -21,20 +21,58 @@ MT5 needs files in **two** places:
 MyEA.mq5   →  MQL5/Experts/ea/MyEA.mq5
 ```
 
-### B) Includes — `MQL5/Include/Risk/`
+### B) Includes — `MQL5/Include/`
 
 ```text
-RiskCalculator.mqh      →  MQL5/Include/Risk/RiskCalculator.mqh
-CorrelationGroups.mqh   →  MQL5/Include/Risk/CorrelationGroups.mqh
-CorrelationRiskGate.mqh →  MQL5/Include/Risk/CorrelationRiskGate.mqh
+Include/Risk/
+  RiskCalculator.mqh
+  CorrelationGroups.mqh
+  CorrelationRiskGate.mqh
+
+Include/Filters/
+  PullbackEntry.mqh
+
+Include/Trade/
+  OrderExecutor.mqh
 ```
 
 **Steps:**
 
 1. MT5 → **File → Open Data Folder**
 2. Create `MQL5\Experts\ea\` — paste **MyEA.mq5**
-3. Create `MQL5\Include\Risk\` — paste all **3 .mqh** files
+3. Create folders under `MQL5\Include\` — paste all **.mqh** files as above
 4. Compile **MyEA.mq5** only (not the .mqh files alone)
+
+## Pullback pending orders
+
+When `InpPullbackPendingEnabled = true` (default):
+
+| Trend | Pending order |
+|---|---|
+| Close **above** EMA | **Buy Limit** at EMA (pullback down) |
+| Close **below** EMA | **Sell Limit** at EMA (pullback up) |
+
+SL/TP use your Excel tier rules (`InpPullbackMinTpPips`, `InpPullbackTargetTpPips`).
+
+Pipeline:
+
+```text
+New bar → BuildPullbackSetup() → Correlation gate → Pending OrderSend
+```
+
+Experts log tags: `[PULLBACK]` then `[CORR]` then `[ORDER]`.
+
+## Inputs (match Excel)
+
+| Input | Default | Notes |
+|---|---|---|
+| `InpRiskPercentPerTrade` | 0.5% | Base risk |
+| `InpMaxCorrelationGroupRiskPercent` | 1.0% | Group cap |
+| `InpReduceLotsForCorrelatedTrades` | true | 100/50/25/12.5% |
+| `InpPullbackEmaPeriod` | 50 | Trend + pullback level |
+| `InpPullbackTargetTpPips` | 100 | TP distance |
+| `InpPullbackMinTpPips` | 50 | Min TP filter |
+| `InpPullbackExpiryHours` | 24 | Pending expiry |
 
 ## Compile
 
@@ -86,10 +124,9 @@ Signal → EMA Guard → Pullback → Re-entry → ApproveCorrelationEntry() →
 
 ## Next modules to add
 
-1. `Filters/EmaGuard.mqh`
-2. `Filters/PullbackEntry.mqh`
-3. `Filters/ReentryControl.mqh`
-4. `Filters/TrendFilter.mqh` (from Excel D76 logic)
+1. `Filters/EmaGuard.mqh` (stricter trend filter)
+2. `Filters/ReentryControl.mqh`
+3. `Filters/TrendFilter.mqh` (currency strength table from Excel)
 
 ## Log format
 
