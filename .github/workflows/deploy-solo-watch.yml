@@ -6,6 +6,7 @@ on:
     paths:
       - "solo-watch/**"
       - "alarm-log/**"
+      - "ea-corr-calc/**"
       - ".github/workflows/deploy-solo-watch.yml"
   workflow_dispatch:
 
@@ -26,9 +27,10 @@ jobs:
       - name: Build combined site
         run: |
           rm -rf _site
-          mkdir -p _site/alarm-log
+          mkdir -p _site/alarm-log _site/ea-corr-calc
           cp -r solo-watch/. _site/
           cp -r alarm-log/. _site/alarm-log/
+          cp -r ea-corr-calc/. _site/ea-corr-calc/
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
@@ -36,4 +38,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./_site
           force_orphan: true
-          commit_message: "Deploy Solo Watch + Alarm Log"
+          commit_message: "Deploy Solo Watch + Alarm Log + Corr Risk"
