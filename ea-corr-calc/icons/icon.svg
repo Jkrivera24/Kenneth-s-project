@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <rect width="512" height="512" rx="96" fill="#0f2744"/>
+  <path d="M96 352 L160 288 L224 320 L320 192 L416 256" stroke="#22c55e" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="160" cy="288" r="20" fill="#22c55e"/>
+  <circle cx="320" cy="192" r="20" fill="#f59e0b"/>
+  <rect x="280" y="120" width="160" height="48" rx="12" fill="#1c3a5e" stroke="#3b82f6" stroke-width="4"/>
+  <text x="360" y="152" text-anchor="middle" fill="#93c5fd" font-family="system-ui,sans-serif" font-size="22" font-weight="700">PEND</text>
+</svg>
